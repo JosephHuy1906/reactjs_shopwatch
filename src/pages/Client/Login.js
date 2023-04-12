@@ -1,58 +1,97 @@
 import { Await, Link, useNavigate } from 'react-router-dom';
-
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
+import { Box, TextField } from '@mui/material';
+import Swal from 'sweetalert2';
+import * as request from '../../utils/Request';
 function Login() {
-    const [login, setLogin] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const token = localStorage.getItem("token");
+    const [login, setLogin] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const token = localStorage.getItem('token');
 
     const user = {
         email: email,
-        password: password
-    }
+        password: password,
+    };
     const navigate = useNavigate();
 
 
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        const us = {
+            email: data.get('email'),
+            password: data.get('password'),
+        };
 
-    const submit = (e) => {
-        e.preventDefault();
-        if(email == "" || password == ""){
-            setLogin("Không được để trống")
-        }else{
-            axios.post('http://localhost:6060/user/login/', user)
-            .then(res => {
+        axios
+            .post('http://localhost:6060/user/login/', us)
+            .then((res) => {
                 if (res.data.status === 1) {
-                    localStorage.setItem("token", res.data.token)
-                    navigate('/profile')
+                    localStorage.setItem('token', res.data.token);
                 }
-                setLogin(res.data.message)
+                setLogin(res.data.message);
             })
-            .catch(err => console.log(err))
-        }
-    }
+            .catch((err) => console.log(err));
+        navigate('/');
+        Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Login success',
+            showConfirmButton: false,
+            timer: 1500,
+        });
+    };
 
     return (
         <>
             <div className="login">
                 <div className="login-left">
                     <h2>Sign In</h2>
-                    <form onSubmit={submit}>
-                    <p className='err'>{login}</p>
-                        <label htmlFor="email">Email</label>
-                        
-                        <br />
-                        <input type="email" id='email' onChange={e => setEmail(e.target.value)} value={email}/>
-                        <br />
-                        <label htmlFor="password" >Password</label>
-                        <br />
-                        <input type="password" id='password' onChange={e => setPassword(e.target.value)} value={password}/>
+                   <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                        <Box
+                            sx={{
+                                width: 500,
+                                maxWidth: '100%',
+                            }}
+                        >
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                required
+                                id="email"
+                                label="Email"
+                                name="email"
+                                autoComplete="email"
+                                autoFocus
+                                type="email"
+                                className="input"
+                            />
+                        </Box>
+                        <Box
+                            sx={{
+                                width: 500,
+                                maxWidth: '100%',
+                            }}
+                        >
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                required
+                                name="password"
+                                label="Password"
+                                className="input"
+                                type="password"
+                                id="password"
+                                autoComplete="current-password"
+                            />
+                        </Box>
                         <br />
                         <a href="">Forgot your Password?</a>
                         <br />
                         <button>Sign In</button>
-                    </form>
+                    </Box>
                     <p>Or sigin in with</p>
                     <a href="">
                         <img src="images/facebook.png" alt="" />
@@ -65,9 +104,6 @@ function Login() {
                     <span>
                         Don't have an account? <Link to="/regin">Sign up</Link>
                     </span>
-                </div>
-                <div className="login-right">
-                    <img src="images/undraw_file_sync_ot38.svg" alt="" />
                 </div>
             </div>
         </>

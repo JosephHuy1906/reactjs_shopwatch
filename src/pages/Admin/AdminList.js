@@ -15,12 +15,12 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Swal from 'sweetalert2';
 import Modal from '@mui/material/Modal';
-import AddProduct from './AddProduct';
-import EditProduct from './EditProduct';
+import AddProduct from './AddCate';
+import EditProduct from './EditCate';
 import Skeleton from '@mui/material/Skeleton';
-
 import { useAppStore } from '../../appStore';
-import { NumericFormat } from 'react-number-format';
+import AddAdmin from './AddAdmin';
+import EditAdmin from './EditAdmin';
 
 const style = {
     position: 'absolute',
@@ -34,7 +34,7 @@ const style = {
     p: 4,
 };
 
-export default function ProductList() {
+export default function AdminList() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [open, setOpen] = useState(false);
@@ -44,20 +44,21 @@ export default function ProductList() {
     const handleClose = () => setOpen(false);
     const handleEditOpen = () => setEditopen(true);
     const handleEditClose = () => setEditopen(false);
-    const setRows = useAppStore((state) => state.setRows);
-    const rows = useAppStore((state) => state.rows);
+    const [rows, setRows] = useState([]);
+    // const setRows = useAppStore((state) => state.setRows);
+    // const rows = useAppStore((state) => state.rows);
 
     useEffect(() => {
-        apiProduct();
+        apiCate();
     }, []);
 
-    const apiProduct = async () => {
-        await axios.get('http://localhost:6060/apiproduct').then((res) => {
+    const apiCate = async () => {
+        await axios.get('http://localhost:6060/category').then((res) => {
             setRows(res.data);
         });
     };
-    const removeProduct = async (id) => {
-        await axios.delete('http://localhost:6060/apiproduct/' + id).then((res) => {
+    const removeCate = async (id) => {
+        await axios.delete('http://localhost:6060/category/' + id).then((res) => {
             setRows(res.data);
         });
     };
@@ -88,31 +89,27 @@ export default function ProductList() {
 
     const deleteApi = async (id) => {
         console.log(id);
-        await removeProduct(id);
+        await removeCate(id);
         Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
-        apiProduct();
+        apiCate();
     };
 
-    const filterData = (v) => {
-        if (v) {
-            setRows([v]);
-        } else {
-            apiProduct();
-        }
-    };
-
-    const editData = (productId, name, price, mota, avatar, category) => {
+    const editData = (id, name) => {
         const data = {
-            productId: productId,
+            categoryId: id,
             name: name,
-            price: price,
-            mota: mota,
-            avatar: avatar,
-            categoryId: category,
         };
         setFormId(data);
         handleEditOpen();
     };
+    const filterData = (v) => {
+        if (v) {
+            setRows([v]);
+        } else {
+            apiCate();
+        }
+    };
+
     return (
         <>
             <div>
@@ -123,7 +120,7 @@ export default function ProductList() {
                     aria-describedby="modal-modal-description"
                 >
                     <Box sx={style}>
-                        <AddProduct closeEvent={handleClose} />
+                        <AddAdmin closeEvent={handleClose} />
                     </Box>
                 </Modal>
 
@@ -134,14 +131,14 @@ export default function ProductList() {
                     aria-describedby="modal-modal-description"
                 >
                     <Box sx={style}>
-                        <EditProduct closeEvent={handleEditClose} fid={formid} />
+                        <EditAdmin closeEvent={handleEditClose} fid={formid} />
                     </Box>
                 </Modal>
             </div>
             {rows.length > 0 && (
                 <Paper sx={{ width: '98%', overflow: 'hidden', padding: '12px' }}>
                     <Typography gutterBottom variant="h5" component="div" sx={{ padding: '20px' }}>
-                        Products List
+                        Admin List
                     </Typography>
                     <Divider />
                     <Box height={10} />
@@ -153,7 +150,7 @@ export default function ProductList() {
                             sx={{ width: 300 }}
                             onChange={(e, v) => filterData(v)}
                             getOptionLabel={(rows) => rows.name || ''}
-                            renderInput={(params) => <TextField {...params} size="small" label="Search Products" />}
+                            renderInput={(params) => <TextField {...params} size="small" label="Search Category" />}
                         />
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}></Typography>
                         <Button variant="contained" endIcon={<AddCircleIcon />} onClick={handleOpen}>
@@ -169,61 +166,29 @@ export default function ProductList() {
                                         Id
                                     </TableCell>
                                     <TableCell align="left" style={{ minWidth: '100px', fontWeight: '600' }}>
-                                        Images
-                                    </TableCell>
-                                    <TableCell align="left" style={{ minWidth: '100px', fontWeight: '600' }}>
                                         Name
                                     </TableCell>
                                     <TableCell align="left" style={{ minWidth: '100px', fontWeight: '600' }}>
-                                        Price
-                                    </TableCell>
-                                    <TableCell align="left" style={{ minWidth: '100px', fontWeight: '600' }}>
-                                        decript
-                                    </TableCell>
-                                    <TableCell align="left" style={{ minWidth: '100px', fontWeight: '600' }}>
-                                        Category
-                                    </TableCell>
-                                    <TableCell align="left" style={{ minWidth: '100px', fontWeight: '600' }}>
-                                        Action
+                                        Actions
                                     </TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                                     return (
-                                        <TableRow hover key={row.productId} role="checkbox" tabIndex={-1}>
-                                            <TableCell align="left">{row.productId}</TableCell>
-                                            <TableCell className="imgProduct" align="left">
-                                                <img src={'/images/' + row.avatar} />
-                                            </TableCell>
+                                        <TableRow hover key={row.categoryId} role="checkbox" tabIndex={-1}>
+                                            <TableCell align="left">{row.categoryId}</TableCell>
                                             <TableCell align="left">{row.name}</TableCell>
-                                            <TableCell align="left">
-                                                <NumericFormat
-                                                    value={row.price}
-                                                    displayType={'text'}
-                                                    thousandSeparator={true}
-                                                />
-                                            </TableCell>
-                                            <TableCell align="left">{row.mota}</TableCell>
-                                            <TableCell align="left">{row.cateName}</TableCell>
+
                                             <TableCell align="left">
                                                 <EditIcon
                                                     style={{ fontSize: '30px', color: 'blue', cursor: 'pointer' }}
-                                                    onClick={() =>
-                                                        editData(
-                                                            row.productId,
-                                                            row.name,
-                                                            row.price,
-                                                            row.mota,
-                                                            row.avatar,
-                                                            row.categoryId,
-                                                        )
-                                                    }
+                                                    onClick={() => editData(row.categoryId, row.name)}
                                                 />
 
                                                 <DeleteIcon
                                                     style={{ fontSize: '30px', color: 'darkred', cursor: 'pointer' }}
-                                                    onClick={() => deleteProduct(row.productId)}
+                                                    onClick={() => deleteProduct(row.categoryId)}
                                                 />
                                             </TableCell>
                                         </TableRow>

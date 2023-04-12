@@ -20,6 +20,7 @@ import CategoryIcon from '@mui/icons-material/Category';
 import AllInboxIcon from '@mui/icons-material/AllInbox';
 import DvrIcon from '@mui/icons-material/Dvr';
 import PersonIcon from '@mui/icons-material/Person';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 
 const drawerWidth = 240;
 
@@ -190,6 +191,27 @@ export default function AdminNavigation() {
                                 <DvrIcon fontSize='20px'/>
                             </ListItemIcon>
                             <ListItemText primary="Oder" sx={{ opacity: open ? 1 : 0 }} />
+                        </ListItemButton>
+                    </ListItem>
+
+                    <ListItem disablePadding sx={{ display: 'block' }} onClick={() => navigative('/admin/ad')}>
+                        <ListItemButton
+                            sx={{
+                                minHeight: 48,
+                                justifyContent: open ? 'initial' : 'center',
+                                px: 2.5,
+                            }}
+                        >
+                            <ListItemIcon
+                                sx={{
+                                    minWidth: 0,
+                                    mr: open ? 3 : 'auto',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                <AdminPanelSettingsIcon fontSize='20px'/>
+                            </ListItemIcon>
+                            <ListItemText primary="Admin" sx={{ opacity: open ? 1 : 0 }} />
                         </ListItemButton>
                     </ListItem>
                 </List>

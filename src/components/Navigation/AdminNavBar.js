@@ -16,6 +16,8 @@ import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { useAppStore } from '../../appStore';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const AppBar = styled(
     MuiAppBar,
@@ -69,6 +71,7 @@ export default function AdminNavBar() {
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
     const updateOpen = useAppStore((state) => state.updateOpen);
     const dopen = useAppStore((state) => state.dopen);
+    const navigative = useNavigate()
 
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -89,6 +92,17 @@ export default function AdminNavBar() {
     const handleMobileMenuOpen = (event) => {
         setMobileMoreAnchorEl(event.currentTarget);
     };
+    const logout = () => {
+        localStorage.removeItem('tokenAd');
+        navigative('/loginadmin');
+        Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Logout success',
+            showConfirmButton: false,
+            timer: 1500,
+        });
+    };
 
     const menuId = 'primary-search-account-menu';
     const renderMenu = (
@@ -108,7 +122,7 @@ export default function AdminNavBar() {
             onClose={handleMenuClose}
         >
             <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+            <MenuItem onClick={logout}>Logout</MenuItem>
         </Menu>
     );
 

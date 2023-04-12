@@ -1,5 +1,7 @@
+import { Box, TextField } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { Link, Navigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 function Regin() {
@@ -9,6 +11,7 @@ function Regin() {
     const [repassword, setRepassword] = useState('');
     const [errors, setErrors] = useState('');
     const [test, setTest] = useState('');
+    const [login, setLogin] = useState('');
 
     const handleFullName = (e) => {
         setFullName(e.target.value);
@@ -23,12 +26,6 @@ function Regin() {
         setRepassword(e.target.value);
     };
 
-    const apiEmail = async () => {
-        await axios
-            .get('http://localhost:6060/user/email/' + email)
-            .then((res) => setTest(res.data))
-            .catch((err) => console.log(err));
-    };
     const addUser = async (data) => {
         await axios
             .post('http://localhost:6060/user/create', data)
@@ -36,67 +33,128 @@ function Regin() {
             .catch((err) => console.log(err));
     };
     useEffect(() => {
-        apiEmail();
+        apiemail();
     }, [email]);
-    const submit = (e) => {
-        e.preventDefault();
+    const apiemail = async () => {
+        await axios
+            .get('http://localhost:6060/user/email/' + email)
+            .then((res) => setTest(res.data))
+            .catch((err) => console.log(err));
+    };
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        const us = {
+            fullName: data.get('fullName'),
+            password: data.get('password'),
+            email: data.get('email'),
+            repassword: data.get('repassword'),
+        };
 
-        if (fullName == '' || email == '' || password == '' || repassword == '') {
-            setErrors('Vui lòng điền đầy đủ!');
+        if (us.password !== us.repassword) {
+            console.log('Pass nhập lại không đúng');
         } else if (test.length > 0) {
-            setErrors('Email này đã đăng ký');
-        } else if (password !== repassword) {
-            setErrors('Password nhập lại không đúng');
+            console.log('Email đã tồn tại');
         } else {
-            const user = {
-                fullName: fullName,
-                email: email,
-                password: password,
-            };
-            console.log(user);
-            addUser(user);
+            addUser(us);
             Swal.fire('Submitted!', 'Your file has been submitted.', 'success');
-            setErrors('');
         }
     };
     return (
         <>
             <div className="login">
                 <div className="login-left">
-                    <h2>Sign Up</h2>
-                    <form onSubmit={submit}>
-                        <p className="err">{errors}</p>
-                        <label htmlFor="fullName">Full Name</label>
+                    <h2>Sign up</h2>
+                    <form onSubmit={handleSubmit}>
+                        <Box
+                            sx={{
+                                width: 500,
+                                maxWidth: '100%',
+                            }}
+                        >
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                required
+                                id="fullName"
+                                label="Full Name"
+                                name="fullName"
+                                autoComplete="fullName"
+                                autoFocus
+                                type="fullName"
+                                className="input"
+                            />
+                        </Box>
+                        <Box
+                            sx={{
+                                width: 500,
+                                maxWidth: '100%',
+                            }}
+                        >
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                required
+                                id="email"
+                                label="Email"
+                                name="email"
+                                autoComplete="email"
+                                autoFocus
+                                type="email"
+                                className="input"
+                                onChange={(e) => setEmail(e.target.value)}
+                                value={email}
+                            />
+                        </Box>
+
+                        <Box
+                            sx={{
+                                width: 500,
+                                maxWidth: '100%',
+                            }}
+                        >
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                required
+                                name="password"
+                                label="Password"
+                                className="input"
+                                type="password"
+                                id="password"
+                                autoComplete="current-password"
+                            />
+                        </Box>
+                        <Box
+                            sx={{
+                                width: 500,
+                                maxWidth: '100%',
+                            }}
+                        >
+                            <TextField
+                                fullWidth
+                                margin="normal"
+                                required
+                                name="repassword"
+                                label="Repassword"
+                                className="input"
+                                type="password"
+                                id="repassword"
+                                autoComplete="current-password"
+                            />
+                        </Box>
                         <br />
-                        <input type="text" id="fullName" onChange={handleFullName} value={fullName} /> <br />
-                        <br />
-                        <label htmlFor="email">Email</label>
-                        <br />
-                        <input type="email" id="email" onChange={handleEmail} value={email} />
-                        <br />
-                        <br />
-                        <label htmlFor="password">Password</label>
-                        <br />
-                        <input type="password" id="password" onChange={handlePassword} value={password} />
-                        <br />
-                        <br />
-                        <label htmlFor="repassword">Repassword</label>
-                        <br />
-                        <input type="password" id="repassword" onChange={handleRepassword} value={repassword} />
-                        <br />
-                        <br />
-                        <button type="submit">Sign Up</button>
+
+                        <button>Sign In</button>
                     </form>
-                    <p>Or Sign up with</p>
+                    <p>Or sigin Up with</p>
                     <a href="">
                         <img src="images/facebook.png" alt="" />
                     </a>
                     <a href="">
                         <img src="images/gmail.png" alt="" />
                     </a>
-                </div>
-                <div className="login-right">
-                    <img src="images/undraw_file_sync_ot38.svg" alt="" />
+                    <br />
                 </div>
             </div>
         </>

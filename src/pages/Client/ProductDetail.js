@@ -61,7 +61,7 @@ function ProductDetail() {
             <div className="hot-product">
                 <div className="title">
                     <h2>Product Hot</h2>
-                    <button>See</button>
+                    <Link to='shop'>See</Link>
                 </div>
                 <div className="product-item">
                     {proHot.map((data, index) => {
@@ -77,7 +77,7 @@ function ProductDetail() {
                                             displayType={'text'}
                                             thousandSeparator={true}
                                             prefix={'đ'}
-                                        />
+                                        /> 
                                     </p>
                                 </div>
                                 <Link to={'/productdetail/' + data.productId}>

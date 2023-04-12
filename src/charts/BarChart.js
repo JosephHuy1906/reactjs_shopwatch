@@ -1,33 +1,39 @@
-import React from "react";
-import { Chart } from "react-google-charts";
-
-export const data = [
-  ["Year", "Sales", "Expenses", "Profit"],
-  ["2014", 1000, 400, 200],
-  ["2015", 1170, 460, 250],
-  ["2016", 660, 1120, 300],
-  ["2017", 1030, 540, 350],
-  ["2018", 1000, 400, 200],
-  ["2019", 1170, 460, 250],
-  ["2020", 660, 1120, 300],
-  ["2021", 1030, 540, 350],
-];
+import React, { useEffect, useState } from 'react';
+import { Chart } from 'react-google-charts';
+import AxiosRequest from '../utils/AxiosRequest';
+// export const data = [
+//   ["Year", "Totals", ],
+//   ["2014", 1000],
+//   ["2015", 1170],
+//   ["2016", 660],
+//   ["2017", 1030],
+//   ["2018", 1000],
+//   ["2019", 1170],
+//   ["2020", 660],
+//   ["2021", 1030],
+// ];
 
 export const options = {
-  chart: {
-    title: "Company Performance",
-    subtitle: "Sales, Expenses, and Profit: 2014-2017",
-  },
+    chart: {
+        title: 'Totals year',
+    },
 };
 
 export default function BarChart() {
-  return (
-    <Chart
-      chartType="Bar"
-      width="100%"
-      height="400px"
-      data={data}
-      options={options}
-    />
-  );
+    const [chart, setChart] = useState([]);
+    const dt = [['Year', 'Totals']];
+    useEffect(() => {
+        charts();
+    }, []);
+    const charts = () => {
+        AxiosRequest.get('oder/chart').then((res) => {
+            setChart(res.data);
+        });
+    };
+
+    chart.forEach((data) => {
+        dt.push([`${data.year}`, data.total]);
+    });
+    console.log(dt);
+    return <Chart chartType="Bar" width="100%" height="400px" data={dt} options={options} />;
 }

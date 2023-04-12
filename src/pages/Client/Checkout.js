@@ -1,3 +1,4 @@
+import { Box, Paper, Skeleton } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { NumericFormat } from 'react-number-format';
@@ -9,28 +10,28 @@ function Cart() {
     const [total, setTotal] = useState();
     const [profile, setProfile] = useState([]);
     const [userId, setUserId] = useState('');
-    const [OderId, setOderId] = useState("");
+    const [OderId, setOderId] = useState('');
     const [data, setData] = useState([]);
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [address, setAdress] = useState('');
+
+
     const cart = JSON.parse(localStorage.getItem('cart'));
     const token = localStorage.getItem('token');
     const tinh = cart.reduce((sp, item) => sp + item.total, 0);
     const navigate = useNavigate();
     useEffect(() => {
+        parseToken();
         setItem(cart);
         setTotal(tinh);
         OderUs();
     }, []);
-
-    useEffect(() => {
-        parseToken();
+    useEffect( ()=>{
         deatilUser();
-        
-    }, [profile]);
-
+    }, [profile])
+    console.log(data);
     const parseToken = async () => {
         await axios.get('http://localhost:6060/user/profile/' + token).then((res) => {
             setProfile(res.data);
@@ -40,7 +41,7 @@ function Cart() {
 
     const deatilUser = async () => {
         await axios.get('http://localhost:6060/user/id/' + userId).then((res) => {
-            setData(res.data[0]);
+            setData(res.data);
         });
     };
 
@@ -68,17 +69,14 @@ function Cart() {
             })
             .catch((err) => console.log(err));
     };
-    const OderUs = () =>{
+    const OderUs = () => {
         const result = Math.random().toString(36).substring(2, 9);
         console.log(result);
-        setOderId(result)
-    }
-   
+        setOderId(result);
+    };
+
     const submit = (e) => {
         e.preventDefault();
-        
-        const today = new Date();
-        const date = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
         const user = {
             fullName: fullName,
             Phone: phone,
@@ -91,38 +89,37 @@ function Cart() {
         };
         const Oder = {
             OderId: OderId,
-            date_creat: date,
             address: data.address,
             phone: data.Phone,
             price: total,
             userId: userId,
-            statusId: 1
+            statusId: 1,
         };
         const OderDetail = {
             OderId: OderId,
         };
 
+        console.log(user);
         if (data.Phone !== null && data.address !== null) {
             addOder(Oder);
             console.log(Oder);
             console.log(OderDetail);
-            item.map((data)=>{
+            item.map((data) => {
                 addOderDetail({
                     oderId: OderId,
                     productId: data.id,
                     price: data.price,
-                    quantity: data.quatity
+                    quantity: data.quatity,
                 });
-            })
+            });
             Swal.fire({
                 position: 'top-end',
                 icon: 'success',
                 title: 'Thank you for your purchase',
                 showConfirmButton: false,
                 timer: 1500,
-              })
-              navigate('/')
-
+            });
+            navigate('/');
         } else if (phone == '' && address == '') {
             console.log('phải điền đầy đủ');
         } else if (address !== '' && phone !== '') {
@@ -134,74 +131,93 @@ function Cart() {
         <>
             <div className="checkout">
                 <form onSubmit={submit}>
-                    <div className="checkout-left">
-                        <h3>Delivery information</h3>
+                    {data.length > 0 && (
+                        <div className="checkout-left">
+                            <h3>Delivery information</h3>
 
-                        <div className="col-12">
-                            <div className="checkout-form">
-                                <label htmlFor="fullname">Full name</label>
-                                <br />
-                                <input
-                                    defaultValue={data.fullName}
-                                    onChange={(e) => {
-                                        setFullName(e.target.value);
-                                    }}
-                                />
-                                <br />
+                            <div className="col-12">
+                                <div className="checkout-form">
+                                    <label htmlFor="fullname">Full name</label>
+                                    <br />
+                                    <input
+                                        defaultValue={data[0].fullName}
+                                        onChange={(e) => {
+                                            setFullName(e.target.value);
+                                        }}
+                                    />
+                                    <br />
+                                </div>
+                                <div className="checkout-form">
+                                    <label htmlFor="phone">Phone</label>
+                                    <br />
+                                    <input
+                                        defaultValue={data[0].Phone}
+                                        onChange={(e) => {
+                                            setPhone(e.target.value);
+                                        }}
+                                    />
+                                </div>
                             </div>
-                            <div className="checkout-form">
-                                <label htmlFor="phone">Phone</label>
-                                <br />
-                                <input
-                                    defaultValue={data.Phone}
-                                    onChange={(e) => {
-                                        setPhone(e.target.value);
-                                    }}
-                                />
+
+                            <label htmlFor="email">Email</label>
+                            <br />
+                            <input
+                                type="email"
+                                id="email"
+                                defaultValue={data[0].email}
+                                onChange={(e) => {
+                                    setEmail(e.target.value);
+                                }}
+                            />
+                            <br />
+                            <label htmlFor="Address">Address</label>
+                            <br />
+                            <textarea
+                                type="text"
+                                id="Address"
+                                defaultValue={data[0].address}
+                                onChange={(e) => {
+                                    setAdress(e.target.value);
+                                }}
+                            />
+                            <br />
+                            <br />
+                            <h3>Payments</h3>
+                            <div className="pay">
+                                <div className="pay-item">
+                                    <label htmlFor="check">
+                                        <img src="images/pay.png" alt="" />
+                                        Payment on delivery
+                                    </label>
+                                    <input type="radio" id="check" />
+                                </div>
+                                <div className="pay-item">
+                                    <label htmlFor="check-momo">
+                                        <img src="images/momo.png" alt="" />
+                                        E-wallet momo
+                                    </label>
+                                    <input type="radio" id="check-momo" />
+                                </div>
                             </div>
                         </div>
-
-                        <label htmlFor="email">Email</label>
-                        <br />
-                        <input
-                            type="email"
-                            id="email"
-                            defaultValue={data.email}
-                            onChange={(e) => {
-                                setEmail(e.target.value);
-                            }}
-                        />
-                        <br />
-                        <label htmlFor="Address">Address</label>
-                        <br />
-                        <textarea
-                            type="text"
-                            id="Address"
-                            defaultValue={data.address}
-                            onChange={(e) => {
-                                setAdress(e.target.value);
-                            }}
-                        />
-                        <br />
-                        <br />
-                        <h3>Payments</h3>
-                        <div className="pay">
-                            <div className="pay-item">
-                                <label htmlFor="check">
-                                    <img src="images/pay.png" alt="" />
-                                    Payment on delivery
-                                </label>
-                                <input type="radio" id="check" />
-                            </div>
-                            <div className="pay-item">
-                                <label htmlFor="check-momo">
-                                    <img src="images/momo.png" alt="" />
-                                    E-wallet momo
-                                </label>
-                                <input type="radio" id="check-momo" />
-                            </div>
-                        </div>
-                    </div>
+                    )}
+                    {data.length == 0 && (
+                        <Paper sx={{ width: '98%', overflow: 'hidden', padding: '12px' }}>
+                            <Box height={20} />
+                            <Skeleton variant="rectangular" width={'100%'} height={30} />
+                            <Box height={20} />
+                            <Skeleton variant="rectangular" width={'100%'} height={60} />
+                            <Box height={20} />
+                            <Skeleton variant="rectangular" width={'100%'} height={60} />
+                            <Box height={20} />
+                            <Skeleton variant="rectangular" width={'100%'} height={60} />
+                            <Box height={20} />
+                            <Skeleton variant="rectangular" width={'100%'} height={60} />
+                            <Box height={20} />
+                            <Skeleton variant="rectangular" width={'100%'} height={60} />
+                            <Box height={20} />
+                        </Paper>
+                    )}
                     <div className="checkout-right">
                         <h3>Order summary</h3>
                         <div className="checkout-all">

@@ -8,7 +8,7 @@ import axios from 'axios';
 import { useAppStore } from '../../appStore';
 
 
-function EditCate({ fid, closeEvent }) {
+function EditAdmin({ fid, closeEvent }) {
     const [category, setCategory] = useState([]);
     const [categoryId, setCategoryId] = useState('');
     const [name, setName] = useState('');
@@ -36,14 +36,14 @@ function EditCate({ fid, closeEvent }) {
         const products = {
             name: name,
         };
-        editCate(products);
+        editAdmin(products);
         closeEvent();
         Swal.fire('Submitted!', 'Your file has been submitted.', 'success');
         window.location.reload();
     };
 
 
-    const editCate = async (data) => {
+    const editAdmin = async (data) => {
         await axios
             .put('http://localhost:6060/category/' + fid.categoryId, data)
             .then((res) => {
@@ -85,4 +85,4 @@ function EditCate({ fid, closeEvent }) {
     );
 }
 
-export default EditCate;
+export default EditAdmin;

@@ -1,8 +1,6 @@
 import { Box, Button, Grid, IconButton, InputAdornment, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import { useAppStore } from '../../appStore';
@@ -46,11 +44,12 @@ function AddCate({ closeEvent }) {
             .then((res) => console.log(res))
             .catch((err) => console.log(err));
     };
+    
     return (
         <>
             <Box sx={{ m: 2 }} />
             <Typography variant="h5" align="center">
-                Add Product
+                Add Category
             </Typography>
             <IconButton style={{ position: 'absolute', top: '0', right: '0' }} onClick={closeEvent}>
                 X

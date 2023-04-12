@@ -15,8 +15,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Swal from 'sweetalert2';
 import Modal from '@mui/material/Modal';
-import AddProduct from './AddCate';
-import EditProduct from './EditCate';
+import AddCate from './AddCate';
+import EditCate from './EditCate';
 import Skeleton from '@mui/material/Skeleton';
 import { useAppStore } from '../../appStore';
 
@@ -118,7 +118,7 @@ export default function CateList() {
                     aria-describedby="modal-modal-description"
                 >
                     <Box sx={style}>
-                        <AddProduct closeEvent={handleClose} />
+                        <AddCate closeEvent={handleClose} />
                     </Box>
                 </Modal>
 
@@ -129,7 +129,7 @@ export default function CateList() {
                     aria-describedby="modal-modal-description"
                 >
                     <Box sx={style}>
-                        <EditProduct closeEvent={handleEditClose} fid={formid} />
+                        <EditCate closeEvent={handleEditClose} fid={formid} />
                     </Box>
                 </Modal>
             </div>

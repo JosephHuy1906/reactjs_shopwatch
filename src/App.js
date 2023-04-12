@@ -1,4 +1,4 @@
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { Route, BrowserRouter as Router, RouterProvider, Routes, createBrowserRouter } from 'react-router-dom';
 import './App.css';
 import Home from './pages/Client/Home';
 import Product from './pages/Client/Product';
@@ -20,46 +20,47 @@ import Oder from './pages/Admin/Oder';
 import User from './pages/Admin/User';
 import ProductAdmin from './pages/Admin/Product';
 import Category from './pages/Admin/Category';
+import PrivateRoutes from './utils/PrivateRoutes';
+import LoginAdmin from './pages/Client/LoginAdmin';
+import AdminRoutes from './utils/AdminRoutes';
+import Admin from './pages/Admin/Admin';
+import ProductCate from './pages/Client/ProductCate';
 
-
-const router = createBrowserRouter([
-    {
-        path: '/',
-        element: <RootLayout />,
-        errorElement: <Error />,
-        children: [
-            { index: true, element: <Home /> },
-            { path: 'shop', element: <Product /> },
-            { path: 'productdetail/:id', element: <ProductDetail /> },
-            { path: 'cart', element: <Cart /> },
-            {
-                path: 'profile',
-                element: <Profile />,
-                children: [
-                    { index: true, element: <OderUser /> },
-                    { path: 'info', element: <Info /> },
-                ],
-            },
-            { path: 'login', element: <Login /> },
-            { path: 'regin', element: <Regin /> },
-            { path: 'checkout', element: <Checkout /> },
-        ],
-    },
-    {
-        path: '/admin',
-        element: <AdminLayout />,
-        children: [
-            { index: true, element: <HomeAdmin /> },
-            { path: 'product', element: <ProductAdmin /> },
-            { path: 'user', element: <User /> },
-            { path: 'oder', element: <Oder /> },
-            { path: 'cate', element: <Category /> },
-
-        ],
-    },
-]);
 function App() {
-    return <RouterProvider router={router} />;
-}
+    return (
+        <Router>
+            <Routes>
+                <Route element={<RootLayout />} path="/">
+                    <Route element={<Home />} path="/" />
+                    <Route element={<Login />} path="/login" />
+                    <Route path="shop" element={<Product />} />
+                    <Route path="productdetail/:id" element={<ProductDetail />} />
+                    <Route path="cart" element={<Cart />} />
+                    <Route path="regin" element={<Regin />} />
+                    <Route path="checkout" element={<Checkout />} />
+                    <Route path="shop/:id" element={<ProductCate />} />
+                    <Route element={<PrivateRoutes />}>
+                        <Route element={<Profile />} path="/profile">
+                            <Route index={true} element={<OderUser />} />
+                            <Route path="info" element={<Info />} />
+                        </Route>
+                    </Route>
+                </Route>
+                <Route path="*" element={<Error />} />
 
+                <Route element={<LoginAdmin />} path="/loginadmin" />
+                <Route element={<AdminRoutes />}>
+                    <Route element={<AdminLayout />} path="/admin">
+                        <Route index={true} element={<HomeAdmin />} />
+                        <Route path="product" element={<ProductAdmin />} />
+                        <Route path="user" element={<User />} />
+                        <Route path="oder" element={<Oder />} />
+                        <Route path="cate" element={<Category />} />
+                        <Route path="ad" element={<Admin />} />
+                    </Route>
+                </Route>
+            </Routes>
+        </Router>
+    );
+}
 export default App;

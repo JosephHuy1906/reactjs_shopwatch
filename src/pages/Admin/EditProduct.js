@@ -18,7 +18,6 @@ function EditProduct({ fid, closeEvent }) {
 
     useEffect(() => {
         cate();
-        console.log('Fid: ' + fid.productId);
         setName(fid.name);
         setAvatar(fid.avatar);
         setCategoryId(fid.categoryId);
@@ -122,7 +121,6 @@ function EditProduct({ fid, closeEvent }) {
                         id="outlined-select-currency"
                         select
                         label="Category"
-                        defaultValue="EUR"
                         size="small"
                         sx={{ width: 150 }}
                         onChange={handleCategory}

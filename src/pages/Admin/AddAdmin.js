@@ -1,24 +1,19 @@
 import { Box, Button, Grid, IconButton, InputAdornment, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import { useAppStore } from '../../appStore';
+import { useNavigate } from 'react-router-dom';
 
 
-function EditCate({ fid, closeEvent }) {
+function AddAdmin({ closeEvent }) {
     const [category, setCategory] = useState([]);
-    const [categoryId, setCategoryId] = useState('');
     const [name, setName] = useState('');
-    const setRows = useAppStore((state) => state.setRows);
-    
-
+    const setRows = useAppStore( (state) => state.setRows)
+    const navigate = useNavigate();
     useEffect(() => {
         cate();
-        console.log('Fid: ' + fid.categoryId);
-        setName(fid.name);
     }, []);
     const cate = () => {
         axios
@@ -27,35 +22,34 @@ function EditCate({ fid, closeEvent }) {
             .catch((err) => console.log(err));
     };
 
+
     const handleName = (e) => {
         setName(e.target.value);
     };
- 
 
-    const edit = () => {
+    const add = () => {
         const products = {
             name: name,
         };
-        editCate(products);
+        addAdmin(products);
         closeEvent();
         Swal.fire('Submitted!', 'Your file has been submitted.', 'success');
-        window.location.reload();
+        navigate('/admin/cate')
     };
 
 
-    const editCate = async (data) => {
-        await axios
-            .put('http://localhost:6060/category/' + fid.categoryId, data)
-            .then((res) => {
-                setRows(res.data);
-            })
+    const addAdmin = (data) => {
+        axios
+            .post('http://localhost:6060/category', data)
+            .then((res) => console.log(res))
             .catch((err) => console.log(err));
     };
+    
     return (
         <>
             <Box sx={{ m: 2 }} />
             <Typography variant="h5" align="center">
-                Edit Category
+                Add Product
             </Typography>
             <IconButton style={{ position: 'absolute', top: '0', right: '0' }} onClick={closeEvent}>
                 X
@@ -74,9 +68,9 @@ function EditCate({ fid, closeEvent }) {
                         value={name}
                     />
                 </Grid>
-              
+               
                 <Grid item xs={12}>
-                    <Button variant="contained" onClick={edit}>
+                    <Button variant="contained" onClick={add}>
                         Submit
                     </Button>
                 </Grid>
@@ -85,4 +79,4 @@ function EditCate({ fid, closeEvent }) {
     );
 }
 
-export default EditCate;
+export default AddAdmin;

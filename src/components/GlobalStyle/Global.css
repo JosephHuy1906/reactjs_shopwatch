@@ -83,6 +83,14 @@ a {
     padding: 10px;
     list-style: none;
 }
+.header-right ul .search{
+    width: 200px;
+    /* position: absolute; */
+    /* padding-top: 10px; */
+}
+.header-right ul .search #country-select-demo{
+    /* margin-top: 10px; */
+}
 .header-right ul li a {
     text-decoration: none;
     color: var(--color-4);
@@ -92,14 +100,13 @@ a {
     font-size: 20px;
 }
 .header-right ul li a span{
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
+    width: 10px;
+    height: 10px;
     text-align: center;
     position: absolute;
     color: #ffffff;
     border-radius: 50%;
-    top: 35%;
+    top: 43%;
     background-color: red
 }
 .header-right ul .user {
@@ -202,15 +209,20 @@ main .best-seller .title h2 {
     font-size: 30px;
     font-weight: bold;
 }
-main .best-seller .title button {
+main .best-seller .title a {
     width: 100px;
     background: var(--color-2);
     border: none;
     height: 35px;
     border-radius: 10px;
     color: white;
+    text-align: center;
     font-weight: 700;
+    line-height: 35px;
     cursor: pointer;
+}
+main .best-seller .title a:hover{
+    box-shadow: 0 0 5px gray;
 }
 main .best-seller .best-product {
     display: grid;
@@ -277,15 +289,20 @@ main .hot-product .title h2 {
     font-size: 30px;
     font-weight: bold;
 }
-main .hot-product .title button {
+main .hot-product .title a {
     width: 100px;
     background: var(--color-2);
     border: none;
     height: 35px;
     border-radius: 10px;
+    text-align: center;
+    line-height: 35px;
     color: white;
     font-weight: 700;
     cursor: pointer;
+}
+main .hot-product .title a:hover{
+    box-shadow: 0 0 5px gray;
 }
 main .hot-product .product-item {
     display: grid;
@@ -681,11 +698,28 @@ main .detail {
 
 .not {
     width: 100%;
+    height: 100vh;
+    margin: auto;
     text-align: center;
 }
-
+.not a{
+    position: absolute;
+    background-color: #127fd9;
+    padding: 20px 30px;
+    color: white;
+    border-radius: 10px;
+    top: 70%;
+    left: 45%;
+    margin: auto;
+    text-align: center;
+}
+.not a:hover{
+    box-shadow: 0 0 5px black;
+}
 .number {
     /* background: #fff; */
+    height: 100vh;
+    width: 100vw;
     position: relative;
     font: 900 30vmin "Consolas";
     letter-spacing: 5vmin;
@@ -726,6 +760,9 @@ main .detail {
 }
 
 .text {
+    width: 100vw;
+    top: 30%;
+    position: absolute;
     font: 400 5vmin "Courgette";
 }
 
@@ -833,13 +870,20 @@ li {
     height: 80px;
     display: grid;
     line-height: 80px;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 50px;
     background-color: #E1E1E1;
     text-align: center;
     align-items: center;
+
 }
 .oder .total .totals{
     font-weight: 600;
+    text-align: center;
+    margin: auto;
+}
+.oder .total .icon{
+    text-align: right;
+    padding-right: 10px;
 }
 .oder .total .status{
     width: 180px;
@@ -849,6 +893,7 @@ li {
     border-radius: 10px;
     color: white;
 }
+
 
 .profile-right form h2{
     margin-bottom: 50px;
@@ -886,7 +931,7 @@ li {
 /* login */
 main .login {
     display: grid;
-    grid-template-columns: 500px 500px;
+    grid-template-columns: 500px;
     margin-top: 150px;
     justify-content: center;
     height: 650px;
@@ -895,7 +940,6 @@ main .login {
     color: red;
 }
 .login h2{
-    margin-bottom: 50px;
     font-weight: 500;
     font-size: 30px;
 }
@@ -906,16 +950,21 @@ main .login {
     color: #ccc;
     font-size: 15px;
 }
-
-.login-left input {
+.input{
+font-size: 18px;
+height: 50px;
+}
+/* .login-left input {
     border: none;
     background: transparent;
-    border-bottom: 1px solid #ccc;
+    border: 1px solid #ccc;
     width: 350px;
-    height: 30px;
+    height: 50px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     line-height: 30px;
     outline: none;
-}
+} */
 .login-left form a{
     padding: 20px;
     line-height: 50px;
