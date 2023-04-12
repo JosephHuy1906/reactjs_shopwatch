@@ -14,22 +14,25 @@ import axios from 'axios';
 import AxiosRequest from '../../utils/AxiosRequest';
 
 function HomeAdmin() {
-    const [thongke, setThongke] = useState("");
-    const [month, setMonth] = useState("");
-    const [mouth, setMounth] = useState("");
-    const date =  new Date()
-    useEffect( () =>{
-        thongkeTongDoanhThu()
-       thongkeDoanhThuThang()
-    },[])
-    const thongkeTongDoanhThu = async() =>{
-        await AxiosRequest.get('oder/thongke')
-        .then(res => setThongke(res.data[0]))
-    }
-    const thongkeDoanhThuThang = async() =>{
-        await AxiosRequest.get('oder/thongkemonth')
-        .then(res => setMonth(res.data[0]))
-    }
+    const [thongke, setThongke] = useState('');
+    const [month, setMonth] = useState('');
+    const [year, setYear] = useState('');
+
+    useEffect(() => {
+        thongkeTongDoanhThu();
+        thongkeDoanhThuThang();
+        thongkeDoanhThuNam();
+    }, []);
+    const thongkeTongDoanhThu = async () => {
+        await AxiosRequest.get('oder/thongke').then((res) => setThongke(res.data[0]));
+    };
+    const thongkeDoanhThuThang = async () => {
+        await AxiosRequest.get('oder/thongkemonth').then((res) => setMonth(res.data[0]));
+    };
+    const thongkeDoanhThuNam = async () => {
+        await AxiosRequest.get('oder/thongkeyear').then((res) => setYear(res.data[0]));
+    };
+    console.log(year);
     return (
         <>
             <Box component="main" sx={{ flexFlow: 1, p: 3 }}>
@@ -75,10 +78,10 @@ function HomeAdmin() {
                                         </div>
                                         <div className="paddingAll">
                                             <span style={{ color: '#ffffff' }}>
-                                                <CountUp delay={0.4} end={thongke.totalOder} duration={0.6} />đ
+                                                <CountUp delay={0.4} end={year.total} duration={0.6} />đ
                                             </span>
                                             <br />
-                                            <span style={{ color: '#ffffff' }}>Total Earning</span>
+                                            <span style={{ color: '#ffffff' }}>Total Year</span>
                                         </div>
                                     </Stack>
                                 </CardContent>
