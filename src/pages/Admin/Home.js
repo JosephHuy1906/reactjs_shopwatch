@@ -32,7 +32,6 @@ function HomeAdmin() {
     const thongkeDoanhThuNam = async () => {
         await AxiosRequest.get('oder/thongkeyear').then((res) => setYear(res.data[0]));
     };
-    console.log(year);
     return (
         <>
             <Box component="main" sx={{ flexFlow: 1, p: 3 }}>

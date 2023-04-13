@@ -80,7 +80,6 @@ export default function CateList() {
             oderId: oder,
         };
         setDataOder(data);
-        console.log(data);
         handleOpen();
     };
     const filterData = (v) => {

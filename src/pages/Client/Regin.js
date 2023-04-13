@@ -1,29 +1,16 @@
-import { Box, TextField } from '@mui/material';
+import { Box, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 function Regin() {
-    const [fullName, setFullName] = useState('');
+    const [error, setError] = useState('');
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [repassword, setRepassword] = useState('');
-    const [errors, setErrors] = useState('');
     const [test, setTest] = useState('');
-    const [login, setLogin] = useState('');
 
-    const handleFullName = (e) => {
-        setFullName(e.target.value);
-    };
     const handleEmail = (e) => {
         setEmail(e.target.value);
-    };
-    const handlePassword = (e) => {
-        setPassword(e.target.value);
-    };
-    const handleRepassword = (e) => {
-        setRepassword(e.target.value);
     };
 
     const addUser = async (data) => {
@@ -52,11 +39,12 @@ function Regin() {
         };
 
         if (us.password !== us.repassword) {
-            console.log('Pass nhập lại không đúng');
+            setError('Password nhập lại không đúng');
         } else if (test.length > 0) {
-            console.log('Email đã tồn tại');
+            setError('Email đã tồn tại');
         } else {
             addUser(us);
+            setError('');
             Swal.fire('Submitted!', 'Your file has been submitted.', 'success');
         }
     };
@@ -66,6 +54,9 @@ function Regin() {
                 <div className="login-left">
                     <h2>Sign up</h2>
                     <form onSubmit={handleSubmit}>
+                        <Typography component="h5" variant="h5" sx={{ textAlign: 'center', color: 'red' }}>
+                            {error}
+                        </Typography>
                         <Box
                             sx={{
                                 width: 500,

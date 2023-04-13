@@ -9,7 +9,6 @@ import Swal from "sweetalert2";
             quatity: 1,
             total: data.price,
         };
-        console.log(data);
         let cart = JSON.parse(localStorage.getItem('cart'));
         if (cart == null) {
             cart = [];

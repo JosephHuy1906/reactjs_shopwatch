@@ -16,9 +16,7 @@ function MainNavigation() {
     const productAll = async () => {
         await AxiosRequest.get('apiproduct/search').then((res) => setData(res.data));
     };
-    const submit = (e) => {
-        console.log(e);
-    };
+
     return (
         <>
             <header className="destop">

@@ -2,111 +2,69 @@ import { Box, Paper, Skeleton } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { NumericFormat } from 'react-number-format';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
+
 function Cart() {
+    const res = useLocation();
     const [item, setItem] = useState([]);
     const [total, setTotal] = useState();
-    const [profile, setProfile] = useState([]);
-    const [userId, setUserId] = useState('');
-    const [OderId, setOderId] = useState('');
+   
+    const [oderId, setOderId] = useState('');
     const [data, setData] = useState([]);
-    const [fullName, setFullName] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
-    const [address, setAdress] = useState('');
-
+    const [email, setEmail] = useState(res.state[0].email);
+    const [phone, setPhone] = useState(res.state[0].Phone);
+    const [address, setAdress] = useState(res.state[0].address);
+    const [fullName, setFullName] = useState(res.state[0].fullName);
+    const [userId, setUserId] = useState(res.state[0].userId);
 
     const cart = JSON.parse(localStorage.getItem('cart'));
-    const token = localStorage.getItem('token');
     const tinh = cart.reduce((sp, item) => sp + item.total, 0);
     const navigate = useNavigate();
     useEffect(() => {
-        parseToken();
         setItem(cart);
         setTotal(tinh);
         OderUs();
     }, []);
-    useEffect( ()=>{
-        deatilUser();
-    }, [profile])
-    console.log(data);
-    const parseToken = async () => {
-        await axios.get('http://localhost:6060/user/profile/' + token).then((res) => {
-            setProfile(res.data);
-            setUserId(res.data.userId);
-        });
-    };
 
-    const deatilUser = async () => {
-        await axios.get('http://localhost:6060/user/id/' + userId).then((res) => {
-            setData(res.data);
-        });
-    };
 
     const UpdateUser = async (data) => {
-        await axios
-            .put('http://localhost:6060/user/update/role/' + userId, data)
-            .then((res) => {
-                console.log(res.data);
-            })
-            .catch((err) => console.log(err));
+        await axios.put('http://localhost:6060/user/update/role/' + userId, data);
     };
     const addOder = async (data) => {
-        await axios
-            .post('http://localhost:6060/oder/create', data)
-            .then((res) => {
-                console.log(res.data);
-            })
-            .catch((err) => console.log(err));
+        await axios.post('http://localhost:6060/oder/create', data);
     };
     const addOderDetail = async (data) => {
-        await axios
-            .post('http://localhost:6060/oderdetai/create', data)
-            .then((res) => {
-                console.log(res.data);
-            })
-            .catch((err) => console.log(err));
+        await axios.post('http://localhost:6060/oderdetai/create', data);
     };
-    const OderUs = () => {
-        const result = Math.random().toString(36).substring(2, 9);
-        console.log(result);
+    const OderUs = async() => {
+        const result = await Math.random().toString(36).substring(2, 9);
         setOderId(result);
     };
 
+    const oderadd ={
+        oderId: oderId,
+        address: address,
+        phone: phone,
+        userId: userId,
+        price: tinh
+    }
+    const userup = {
+        Phone: phone,
+        address: address
+    }
     const submit = (e) => {
         e.preventDefault();
-        const user = {
-            fullName: fullName,
-            Phone: phone,
-            address: address,
-            email: email,
-        };
-        const us1 = {
-            Phone: phone,
-            address: address,
-        };
-        const Oder = {
-            OderId: OderId,
-            address: data.address,
-            phone: data.Phone,
-            price: total,
-            userId: userId,
-            statusId: 1,
-        };
-        const OderDetail = {
-            OderId: OderId,
-        };
+        if (phone == null && address == null) {
+           alert('Vui lòng nhập địa chỉ')
+        } else {
+            UpdateUser(userup);
+            addOder(oderadd);
 
-        console.log(user);
-        if (data.Phone !== null && data.address !== null) {
-            addOder(Oder);
-            console.log(Oder);
-            console.log(OderDetail);
             item.map((data) => {
                 addOderDetail({
-                    oderId: OderId,
+                    oderId: oderId,
                     productId: data.id,
                     price: data.price,
                     quantity: data.quatity,
@@ -120,18 +78,13 @@ function Cart() {
                 timer: 1500,
             });
             navigate('/');
-        } else if (phone == '' && address == '') {
-            console.log('phải điền đầy đủ');
-        } else if (address !== '' && phone !== '') {
-            console.log(us1);
-            UpdateUser(us1);
         }
     };
     return (
         <>
             <div className="checkout">
                 <form onSubmit={submit}>
-                    {data.length > 0 && (
+                    {res.state.length > 0 && (
                         <div className="checkout-left">
                             <h3>Delivery information</h3>
 
@@ -140,10 +93,11 @@ function Cart() {
                                     <label htmlFor="fullname">Full name</label>
                                     <br />
                                     <input
-                                        defaultValue={data[0].fullName}
+                                        // defaultValue={data[0].fullName}
                                         onChange={(e) => {
                                             setFullName(e.target.value);
                                         }}
+                                        value={fullName}
                                     />
                                     <br />
                                 </div>
@@ -151,7 +105,7 @@ function Cart() {
                                     <label htmlFor="phone">Phone</label>
                                     <br />
                                     <input
-                                        defaultValue={data[0].Phone}
+                                       value={phone || ""}
                                         onChange={(e) => {
                                             setPhone(e.target.value);
                                         }}
@@ -164,7 +118,7 @@ function Cart() {
                             <input
                                 type="email"
                                 id="email"
-                                defaultValue={data[0].email}
+                                value={email}
                                 onChange={(e) => {
                                     setEmail(e.target.value);
                                 }}
@@ -175,7 +129,7 @@ function Cart() {
                             <textarea
                                 type="text"
                                 id="Address"
-                                defaultValue={data[0].address}
+                                value={address || ""}
                                 onChange={(e) => {
                                     setAdress(e.target.value);
                                 }}
@@ -201,7 +155,7 @@ function Cart() {
                             </div>
                         </div>
                     )}
-                    {data.length == 0 && (
+                    {res.state.length == 0 && (
                         <Paper sx={{ width: '98%', overflow: 'hidden', padding: '12px' }}>
                             <Box height={20} />
                             <Skeleton variant="rectangular" width={'100%'} height={30} />
@@ -233,8 +187,8 @@ function Cart() {
                                                     value={el.total}
                                                     displayType="text"
                                                     thousandSeparator={true}
-                                                    prefix={'đ'}
-                                                />
+                                                    
+                                                /> đ
                                             </p>
                                         </div>
                                     </div>
@@ -243,9 +197,9 @@ function Cart() {
                         </div>
 
                         <div className="oder-total">
-                            <p>Total</p>
+                            <p>Total order</p>
                             <p className="right">
-                                <NumericFormat value={total} displayType="text" thousandSeparator={true} prefix={'đ'} />
+                                <NumericFormat value={total} displayType="text" thousandSeparator={true}  /> đ
                             </p>
                         </div>
                         <button onClick={submit}>Confirm Oder</button>

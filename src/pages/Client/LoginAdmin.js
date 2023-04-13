@@ -29,11 +29,18 @@ const theme = createTheme({
 });
 
 const LoginAdmin = () => {
+    const [error, setError] = useState('');
     const Navigate = useNavigate();
 
     const login = async (data) => {
         await AxiosRequest.post('user/loginAd', data).then((res) => {
             localStorage.setItem('tokenAd', JSON.stringify(res.data));
+            if (res.data.message) {
+                setError(res.data.message);
+            } else {
+                setError('');
+                naviga();
+            }
         });
     };
     const naviga = async () => {
@@ -54,7 +61,6 @@ const LoginAdmin = () => {
             password: data.get('password'),
         };
         login(ad);
-        naviga();
     };
 
     return (
@@ -76,6 +82,9 @@ const LoginAdmin = () => {
                         Sign in Admin
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                        <Typography component="p" variant="p" sx={{textAlign:'center', color: 'red'}}>
+                            {error}
+                        </Typography>
                         <TextField
                             margin="normal"
                             required

@@ -87,7 +87,6 @@ export default function ProductList() {
     };
 
     const deleteApi = async (id) => {
-        console.log(id);
         await removeProduct(id);
         Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
         apiProduct();

@@ -25,6 +25,8 @@ import LoginAdmin from './pages/Client/LoginAdmin';
 import AdminRoutes from './utils/AdminRoutes';
 import Admin from './pages/Admin/Admin';
 import ProductCate from './pages/Client/ProductCate';
+import ForgotPassword from './pages/Client/ForgotPassword';
+import ForgotPasswordCode from './pages/Client/ForgotPasswordCode';
 
 function App() {
     return (
@@ -33,17 +35,19 @@ function App() {
                 <Route element={<RootLayout />} path="/">
                     <Route element={<Home />} path="/" />
                     <Route element={<Login />} path="/login" />
+                    <Route element={<ForgotPassword />} path="/forgot" />
+                    <Route element={<ForgotPasswordCode />} path="/forgotcode" />
                     <Route path="shop" element={<Product />} />
                     <Route path="productdetail/:id" element={<ProductDetail />} />
                     <Route path="cart" element={<Cart />} />
                     <Route path="regin" element={<Regin />} />
-                    <Route path="checkout" element={<Checkout />} />
                     <Route path="shop/:id" element={<ProductCate />} />
                     <Route element={<PrivateRoutes />}>
                         <Route element={<Profile />} path="/profile">
                             <Route index={true} element={<OderUser />} />
                             <Route path="info" element={<Info />} />
                         </Route>
+                        <Route path="checkout" element={<Checkout />} />
                     </Route>
                 </Route>
                 <Route path="*" element={<Error />} />

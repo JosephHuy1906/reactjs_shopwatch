@@ -86,7 +86,6 @@ export default function CateList() {
     };
 
     const deleteApi = async (id) => {
-        console.log(id);
         await removeCate(id);
         Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
         apiCate();

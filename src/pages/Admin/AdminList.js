@@ -53,7 +53,7 @@ export default function AdminList() {
     }, []);
 
     const apiCate = async () => {
-        await axios.get('http://localhost:6060/category').then((res) => {
+        await axios.get('http://localhost:6060/user/useradmin').then((res) => {
             setRows(res.data);
         });
     };
@@ -88,7 +88,6 @@ export default function AdminList() {
     };
 
     const deleteApi = async (id) => {
-        console.log(id);
         await removeCate(id);
         Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
         apiCate();
@@ -149,8 +148,8 @@ export default function AdminList() {
                             options={rows}
                             sx={{ width: 300 }}
                             onChange={(e, v) => filterData(v)}
-                            getOptionLabel={(rows) => rows.name || ''}
-                            renderInput={(params) => <TextField {...params} size="small" label="Search Category" />}
+                            getOptionLabel={(rows) => rows.fullName || ''}
+                            renderInput={(params) => <TextField {...params} size="small" label="Search Admin" />}
                         />
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}></Typography>
                         <Button variant="contained" endIcon={<AddCircleIcon />} onClick={handleOpen}>
@@ -166,7 +165,16 @@ export default function AdminList() {
                                         Id
                                     </TableCell>
                                     <TableCell align="left" style={{ minWidth: '100px', fontWeight: '600' }}>
-                                        Name
+                                        Full Name
+                                    </TableCell>
+                                    <TableCell align="left" style={{ minWidth: '100px', fontWeight: '600' }}>
+                                        Email
+                                    </TableCell>
+                                    <TableCell align="left" style={{ minWidth: '100px', fontWeight: '600' }}>
+                                        Phone
+                                    </TableCell>
+                                    <TableCell align="left" style={{ minWidth: '100px', fontWeight: '600' }}>
+                                        Role
                                     </TableCell>
                                     <TableCell align="left" style={{ minWidth: '100px', fontWeight: '600' }}>
                                         Actions
@@ -177,9 +185,11 @@ export default function AdminList() {
                                 {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                                     return (
                                         <TableRow hover key={row.categoryId} role="checkbox" tabIndex={-1}>
-                                            <TableCell align="left">{row.categoryId}</TableCell>
-                                            <TableCell align="left">{row.name}</TableCell>
-
+                                            <TableCell align="left">{row.userId}</TableCell>
+                                            <TableCell align="left">{row.fullName}</TableCell>
+                                            <TableCell align="left">{row.email}</TableCell>
+                                            <TableCell align="left">{row.Phone}</TableCell>
+                                            <TableCell align="left">{row.role}</TableCell>
                                             <TableCell align="left">
                                                 <EditIcon
                                                     style={{ fontSize: '30px', color: 'blue', cursor: 'pointer' }}

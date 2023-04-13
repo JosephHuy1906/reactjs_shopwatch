@@ -1,22 +1,38 @@
 import { Await, Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-import { Box, TextField } from '@mui/material';
+import { Box, TextField, Typography } from '@mui/material';
 import Swal from 'sweetalert2';
 import * as request from '../../utils/Request';
 function Login() {
     const [login, setLogin] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
     const token = localStorage.getItem('token');
 
-    const user = {
-        email: email,
-        password: password,
-    };
     const navigate = useNavigate();
 
-
+    const loginUser = async (us) => {
+        await axios
+            .post('http://localhost:6060/user/login/', us)
+            .then((res) => {
+                if (res.data.status === 1) {
+                    localStorage.setItem('token', res.data.token);
+                    setError('');
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Login success',
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                    navigate('/');
+                }
+                if (res.data.message) {
+                    setError(res.data.message);
+                }
+            })
+            .catch((err) => console.log(err));
+    };
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -24,24 +40,11 @@ function Login() {
             email: data.get('email'),
             password: data.get('password'),
         };
-
-        axios
-            .post('http://localhost:6060/user/login/', us)
-            .then((res) => {
-                if (res.data.status === 1) {
-                    localStorage.setItem('token', res.data.token);
-                }
-                setLogin(res.data.message);
-            })
-            .catch((err) => console.log(err));
-        navigate('/');
-        Swal.fire({
-            position: 'top-end',
-            icon: 'success',
-            title: 'Login success',
-            showConfirmButton: false,
-            timer: 1500,
-        });
+        if (us.email == '' || us.password == '') {
+            setError('Vui lòng điền đầy đủ');
+        } else {
+            loginUser(us);
+        }
     };
 
     return (
@@ -49,7 +52,10 @@ function Login() {
             <div className="login">
                 <div className="login-left">
                     <h2>Sign In</h2>
-                   <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                        <Typography component="h5" variant="h5" sx={{ textAlign: 'center', color: 'red' }}>
+                            {error}
+                        </Typography>
                         <Box
                             sx={{
                                 width: 500,
@@ -88,7 +94,7 @@ function Login() {
                             />
                         </Box>
                         <br />
-                        <a href="">Forgot your Password?</a>
+                        <Link to="/forgot">Forgot your Password?</Link>
                         <br />
                         <button>Sign In</button>
                     </Box>

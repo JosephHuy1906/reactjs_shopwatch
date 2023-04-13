@@ -40,7 +40,6 @@ function OderDetail({ dataOder, closeEvent }) {
             .then((res) => setData(res.data))
             .catch((err) => console.log(err));
     };
-    console.log(data);
     return (
         <List sx={style} style={{ borderRadius: 10 }}>
             <ListItem alignItems="flex-start">

@@ -1,36 +1,69 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { NumericFormat } from 'react-number-format';
-
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 function Cart() {
     const [item, setItem] = useState([]);
     const [total, setTotal] = useState();
+    const [profile, setProfile] = useState([]);
+    const [userId, setUserId] = useState('');
+    const [data, setData] = useState([]);
     const cart = JSON.parse(localStorage.getItem('cart'));
-
     const tinh = cart.reduce((sp, item) => sp + item.total, 0);
-
+    const token = localStorage.getItem('token');
     useEffect(() => {
         setItem(cart);
         setTotal(tinh);
     }, []);
 
+    useEffect(() => {
+        parseToken();
+    }, [userId]);
+
     const removeItem = (item) => {
         let getSP = localStorage.getItem('cart');
         let cart = JSON.parse(getSP);
-        if (window.confirm('Bạn có muốn xoá không?') === true) {
-            let filtered = cart.filter((items) => items.id !== item.id);
-            localStorage.setItem('cart', JSON.stringify(filtered));
-            window.location.reload(true);
-        }
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire('Deleted!', 'Your file has been deleted.', 'success');
+                let filtered = cart.filter((items) => items.id !== item.id);
+                localStorage.setItem('cart', JSON.stringify(filtered));
+                window.location.reload(true);
+            }
+        });
     };
+
+    const parseToken = async () => {
+        await axios
+            .get('http://localhost:6060/user/profile/' + token)
+            .then((res) => {
+                setProfile(res.data);
+                setUserId(res.data.userId);
+            })
+            .then(
+                await axios.get('http://localhost:6060/user/id/' + userId).then((res) => {
+                    setData(res.data);
+                }),
+            );
+    };
+    console.log(cart);
 
     return (
         <>
             <div className="cart">
                 <h2>Shopping Cart</h2>
                 <br />
-                {cart ? (
+                {cart.length > 0 && (
                     <div className="shop-cart">
                         <div className="carts">
                             {item.map((data, index) => {
@@ -88,13 +121,23 @@ function Cart() {
                                 </b>
                             </div>
                             <br />
-                            <Link to="/checkout">Go to checkout</Link>
+                            <Link to="/checkout" state={data}>
+                                Go to checkout
+                            </Link>
                         </div>
                     </div>
-                ) : (
-                    <>
-                        <h2>rỗng</h2>
-                    </>
+                )}
+                {cart.length == 0 && (
+                    <div className="center" style={{ width: 500, textAlign: 'center', margin: 'auto' }}>
+                        <h3>Cart Rỗng</h3>
+                        <img src="/images/cart.png" alt="" />
+                    </div>
+                )}
+                {cart.length == null && (
+                    <div className="center" style={{ width: 500, textAlign: 'center', margin: 'auto' }}>
+                        <h3>Cart Rỗng</h3>
+                        <img src="/images/cart.png" alt="" />
+                    </div>
                 )}
             </div>
         </>

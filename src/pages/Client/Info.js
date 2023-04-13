@@ -36,9 +36,7 @@ function Info() {
         // e.preventDefault();
         axios
             .put('http://localhost:6060/user/update/role/' + userId, us)
-            .then((res) => {
-                console.log(res);
-            })
+          
             .catch((err) => console.log(err));
             Swal.fire({
                 position: 'top-end',
